@@ -11,50 +11,12 @@ object AtlastBuild {
 val baseSettings = Seq(
     version := "0.0.1",
     scalaVersion := "2.12.1",
-//    scalaOrganization := "org.typelevel",
+    scalaOrganization := "org.typelevel",
     updateOptions ~= (_.withCachedResolution(true)),
     scalacOptions ++= Seq(
-      "-encoding", "UTF-8",
-      "-Xlint",
-      "-Xexperimental",
-      "-deprecation",
-      "-feature",
-      "-language:implicitConversions",
-      "-language:higherKinds",
-      "-language:existentials",
-      "-unchecked",
-      "-Xfatal-warnings",
-      "-Yno-adapted-args",
-      "-Ywarn-unused-import",
-      "-Ywarn-adapted-args",
-      "-Ywarn-inaccessible",
-      "-Ywarn-infer-any",
-      "-Ywarn-nullary-override",
-//      "-Yinduction-heuristics",
-//      "-Xlint:strict-unsealed-patmat",
-      "-Ypartial-unification",
-//      "-Yliteral-types",
-      "-Ywarn-nullary-unit",
-      "-Xfuture"
+      "-Xexperimental"
     ),
-    scalacOptions in Compile += "-Ywarn-value-discard",
-    persistLauncher in Compile := true,
-    persistLauncher in Test := false,
     Dependencies.kindProjector
-  )
-
-  // amazingly hard to do
-  def emptyInputTask: Def.Initialize[InputTask[Unit]] =
-    InputTask.createDyn[String, Unit](
-      InputTask.parserAsInput(
-        Parser.zeroOrMore(
-          Parser.charClass(_ => true)).map(_.mkString))
-    )(Def.task { (_: String) => Def.task(()) })
-
-  private val disableTests: Seq[Def.Setting[_]] = Seq(
-    test in Test := (),
-    testQuick in Test := emptyInputTask.inputTaskValue,
-    testOnly in Test := emptyInputTask.inputTaskValue
   )
 
   lazy val core: CrossProject =  crossProject.in(file("core"))
@@ -70,6 +32,5 @@ val baseSettings = Seq(
     .aggregate(coreJVM, coreJS)
     .settings(Defaults.projectCore)
     .settings(baseSettings: _*)
-    .settings(disableTests: _*)
 
 }
